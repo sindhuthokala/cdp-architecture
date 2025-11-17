@@ -1,102 +1,100 @@
-# Customer360 Ingestion Data Flow
+# 📥 Customer360 Data Ingestion Flow
 
-## Overview
-This document describes how customer data is ingested from multiple source systems into the Customer360 ecosystem. The ingestion pipeline standardizes, validates, and delivers data into the processing/storage layers for downstream use.
-
----
-
-## Objectives
-- Collect customer data from all systems reliably  
-- Support batch, streaming, and API ingestion  
-- Normalize formats across sources  
-- Ensure data quality and schema consistency  
-- Enable near–real-time availability where needed  
+This document explains how raw data from all enterprise systems is collected, validated, and stored inside the Customer 360 platform. It defines ingestion patterns, validation rules, quality checks, and the final outputs that feed downstream layers such as Identity Resolution and Customer Profile modeling.
 
 ---
 
-## High-Level Steps
-
-### 1. Data Extraction
-Data enters the system from:
-- CRM exports  
-- Website & mobile tracking events  
-- Marketing platform engagement logs  
-- POS transactions  
-- Customer support system exports  
-- Vendor feeds / Partner files  
-
-Extraction types:
-- **Batch**: nightly/hourly dumps  
-- **Streaming**: real-time events  
-- **API**: REST/GraphQL pulls  
-- **File uploads**: CSV, JSON, parquet  
+## 🎯 Objectives
+- Collect data reliably from all customer-touching systems  
+- Support batch, streaming, and API-based ingestion  
+- Apply schema & quality validation before downstream processing  
+- Maintain an auditable, immutable Raw Layer for all incoming data  
+- Prepare data for identity stitching and unified profile creation  
 
 ---
 
-### 2. Ingestion Layer
-Once extracted, data flows through:
+## 🗂️ Source Systems
+Customer data may originate from:
 
-#### **a. Batch Pipelines**
-- Scheduled ETL/ELT jobs  
-- Bulk loads to Raw Layer  
-- Validation and schema mapping  
-
-#### **b. Streaming Pipelines**
-- Real-time events from SDKs or tag manager  
-- Event queues / pub-sub topics  
-- JSON payloads normalized into raw logs  
-
-#### **c. API Connectors**
-- CRM sync APIs  
-- Mobile app identity APIs  
-- Third-party marketing APIs  
+- **CRM & Loyalty Systems** (customer profiles)  
+- **Web & Mobile Apps** (events, sessions, device IDs)  
+- **Marketing Platforms** (email events, campaign metadata)  
+- **POS / Ecommerce Systems** (transactions, carts, product data)  
+- **Support Tools** (tickets, chat logs, voice transcripts)  
+- **3rd-party Enrichment Providers** (demographic or behavioral data)  
 
 ---
 
-### 3. Data Validation
-Performed automatically during ingestion:
+## 🏗️ Extraction Methods
 
-- Schema checks  
-- Field-level validation  
-- Required field enforcement  
-- Duplicate detection  
-- PII masking (if applicable)  
+### **1. Batch Exports**
+- Scheduled CSV/Parquet drops (hourly, daily, weekly)  
+- Often used by CRM, POS, legacy systems  
+- Stored temporarily before ingestion  
 
-Invalid records → quarantine for review.
+### **2. Streaming Events**
+- Real-time web/app events (page views, checkouts, logins)  
+- Delivered through event buses or streaming gateways  
+- Ideal for personalization and behavioral analytics  
 
----
+### **3. API Connectors**
+- Pull or push integration with marketing or CRM platforms  
+- Used for incremental sync of customer updates  
 
-### 4. Deposit into Raw Layer
-All ingested data (valid or invalid) is stored in the **Raw Layer**, maintaining source system fidelity.
-
-Characteristics:
-- Immutable  
-- Time-stamped  
-- Partitioned  
-- Auditable  
+### **4. Manual / Automated File Upload**
+- SFTP, cloud bucket upload, or vendor exports  
 
 ---
 
-### Data Flow Summary (ASCII Diagram)
+## 🧹 Ingestion Layer Processing
+
+### **Schema Validation**
+- Required fields (e.g., `email`, `customer_id`)  
+- Data types (e.g., timestamps, integers, arrays)  
+- Allowed enum values  
+
+### **Field-Level Quality Checks**
+- Proper email formatting  
+- Location data validation  
+- Device ID checksum checks  
+
+### **Duplicate Detection**
+- Remove exact duplicates  
+- Flag near-duplicates for downstream identity logic  
+
+### **Quarantine Handling**
+- Invalid records are stored in a separate error bucket  
+- Full lineage maintained for debugging  
+
+---
+
+## 🗄️ Raw Layer Storage
+After validation, data is deposited into the Raw Layer:
+
+- **Immutable** — never modified  
+- **Partitioned** by date/source for efficient querying  
+- **Schema-preserving** — stores original structure  
+- **Time-stamped** for auditing and reproducibility  
+
+---
+
+## 🔎 ASCII Architecture Diagram
 [ Source Systems ]
-       |
-       v
-[ Extraction ]
-   batch / api / streaming
-       |
-       v
+|
+v
+[ Extraction Layer ]
+batch / api / streaming
+|
+v
 [ Ingestion Layer ]
-   validation + normalization
-       |
-       v
-[ Raw Layer Storage ]
-
+validation + normalization
+|
+v
+[ Raw Storage Layer ]
 
 ---
 
-## Outputs of the Ingestion Flow
+## ✅ Outputs of the Ingestion Flow
 - Clean, structured, validated customer data  
-- Ready for transformation into standardized data models  
-- Event streams and datasets prepared for Identity Resolution  
-
-
+- Organized raw datasets ready for transformation  
+- Event streams prepared for Identity Resolution  
