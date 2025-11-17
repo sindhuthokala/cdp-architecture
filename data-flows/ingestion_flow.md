@@ -78,4 +78,25 @@ Characteristics:
 ---
 
 ### Data Flow Summary (ASCII Diagram)
+[ Source Systems ]
+       |
+       v
+[ Extraction ]
+   batch / api / streaming
+       |
+       v
+[ Ingestion Layer ]
+   validation + normalization
+       |
+       v
+[ Raw Layer Storage ]
+
+
+---
+
+## Outputs of the Ingestion Flow
+- Clean, structured, validated customer data  
+- Ready for transformation into standardized data models  
+- Event streams and datasets prepared for Identity Resolution  
+
 
