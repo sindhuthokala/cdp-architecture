@@ -20,3 +20,16 @@ solution-designs/
 - Showcase understanding of ETL pipelines  
 - Governance, PII handling, privacy rules  
 - Real-time vs. batch architectures explained
+
+##🖼️ **Customer360 architecture Diagram**
+
+- multi-source ingestion,
+- structured data processing,
+- identity resolution,
+- unified customer profiling,
+- analytics and activation.
+
+This is the high-level blueprint used in real enterprise CDP and personalization systems.
+Below is the platform-neutral architecture for the Customer360 system.
+
+![Customer360 Architecture](solution-designs/customer360_architecture_diagram.png)
